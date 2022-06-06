@@ -1,16 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { CreateProductDTO, Product, UpdateProductDTO } from "../models/product.model";
 import { environment } from '../../environments/environment'
-import { generateManyProducts, generateOneProduct } from "../models/product.mock";
 import { faker } from "@faker-js/faker";
-import { HttpStatusCode, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { TokenInterceptor } from "../interceptors/token.interceptor";
 import { TokenService } from "./token.service";
 import { AuthService } from "./auth.service";
 import { Auth } from "../models/auth.model";
 
-fdescribe('AuthService', ()=>{
+describe('AuthService', ()=>{
   let authService: AuthService
   let httpController: HttpTestingController
   let tokenService: TokenService
