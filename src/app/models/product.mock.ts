@@ -1,8 +1,8 @@
-import faker from '@faker-js/faker';
-
+import { faker } from '@faker-js/faker';
 import { Product } from './product.model';
 
 export const generateOneProduct = (): Product => {
+
   return {
     id: faker.datatype.uuid(),
     title: faker.commerce.productName(),
@@ -12,14 +12,10 @@ export const generateOneProduct = (): Product => {
       id: faker.datatype.number(),
       name: faker.commerce.department()
     },
-    images: [faker.image.imageUrl(), faker.image.imageUrl()]
+    images: Array(2).fill('').map(_=>faker.image.imageUrl())
   };
 }
 
 export const generateManyProducts = (size = 10): Product[] => {
-  const products: Product[] = [];
-  for (let index = 0; index < size; index++) {
-    products.push(generateOneProduct());
-  }
-  return [...products];
+  return Array(size).fill(0).map(_=>generateOneProduct())
 }
