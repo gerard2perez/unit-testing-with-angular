@@ -35,7 +35,6 @@ export class AuthService {
     return this.http.post<Auth>(`${this.apiUrl}/login`, {email, password})
     .pipe(
       tap(response => {
-        console.log(10, this.tokenService)
         return this.tokenService.saveToken(response.access_token)
       }),
     );

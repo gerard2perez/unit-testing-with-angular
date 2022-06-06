@@ -38,7 +38,6 @@ describe('AuthService', ()=>{
       // Act
       authService.login(email, password)
         .subscribe(token => {
-          console.log('a')
           //Assert
           expect(token).toEqual(mockData)
           done()
