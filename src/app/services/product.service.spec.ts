@@ -5,19 +5,25 @@ import { CreateProductDTO, Product, UpdateProductDTO } from "../models/product.m
 import { environment } from '../../environments/environment'
 import { generateManyProducts, generateOneProduct } from "../models/product.mock";
 import { faker } from "@faker-js/faker";
-import { HttpStatusCode } from "@angular/common/http";
+import { HttpStatusCode, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { TokenInterceptor } from "../interceptors/token.interceptor";
+import { TokenService } from "./token.service";
 fdescribe('ProductsService', ()=>{
   let productsService: ProductsService
   let httpController: HttpTestingController
+  let tokenService: TokenService
   beforeEach(()=>{
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
-        ProductsService
+        ProductsService,
+        TokenService,
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
       ]
     })
     productsService = TestBed.inject(ProductsService)
     httpController = TestBed.inject(HttpTestingController)
+    tokenService = TestBed.inject(TokenService)
   })
   afterEach(()=>{
     httpController.verify()
@@ -29,6 +35,7 @@ fdescribe('ProductsService', ()=>{
     it('should return a product list', (done)=>{
       //Arrange
       const mockData:Product[] = generateManyProducts(100)
+      spyOn(tokenService, 'getToken').and.returnValue('123')
       // Act
       productsService.getAllSimple()
         .subscribe(products => {
@@ -39,6 +46,8 @@ fdescribe('ProductsService', ()=>{
       // http congif
       const url = `${environment.API_URL}/api/v1/products`
       const req = httpController.expectOne(url)
+      const headers = req.request.headers
+      expect(headers.get('Authorization')).toEqual(`Bearer 123`)
       req.flush(mockData)
 
     })
