@@ -8,7 +8,7 @@ import { faker } from "@faker-js/faker";
 import { HttpStatusCode, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TokenInterceptor } from "../interceptors/token.interceptor";
 import { TokenService } from "./token.service";
-fdescribe('ProductsService', ()=>{
+describe('ProductsService', ()=>{
   let productsService: ProductsService
   let httpController: HttpTestingController
   let tokenService: TokenService
