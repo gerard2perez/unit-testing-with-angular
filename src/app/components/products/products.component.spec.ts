@@ -7,7 +7,7 @@ import { ValueService } from 'src/app/services/value.service';
 import { ProductComponent } from '../product/product.component';
 import { ProductsComponent } from './products.component';
 
-fdescribe('ProductsComponent', () => {
+describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
   let productService: jasmine.SpyObj<ProductsService>
