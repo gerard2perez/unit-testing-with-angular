@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { generateOnePerson } from "./person.mock";
 import { Person } from "./person.model";
 
-fdescribe('Test for Person', ()=>{
+describe('Test for Person', ()=>{
   let person: Person
   beforeEach(()=>{
     person = new Person(
