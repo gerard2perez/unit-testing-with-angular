@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { generateOnePerson } from 'src/app/models/person.mock';
+import { generateManyPeople, generateOnePerson } from 'src/app/models/person.mock';
 import { Person } from 'src/app/models/person.model';
 
 @Component({
@@ -8,10 +8,14 @@ import { Person } from 'src/app/models/person.model';
   styleUrls: ['./people.component.sass']
 })
 export class PeopleComponent implements OnInit {
-  person: Person = generateOnePerson()
+  people: Person[] = generateManyPeople(3)
+  selectedPerson: Person | null = null
   constructor() { }
 
   ngOnInit(): void {
+  }
+  choose(person: Person) {
+    this.selectedPerson = person
   }
 
 }

@@ -1,3 +1,15 @@
 <section class="container">
-  <app-person [person]=person></app-person>
+  <h3>Selected Person</h3>
+  <article *ngIf="selectedPerson">
+    <ul>
+      <li>Name: {{selectedPerson.name}}</li>
+      <li>Age: {{selectedPerson.age}}</li>
+    </ul>
+  </article>
+</section>
+<section class="container">
+  <h3>Count ({{people.length}})</h3>
+  <div class="my-grid">
+    <app-person *ngFor="let person of people" [person]=person (onSelected)="choose($event)"></app-person>
+  </div>
 </section>
