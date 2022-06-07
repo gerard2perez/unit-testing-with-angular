@@ -42,6 +42,9 @@ module.exports = function (config) {
       }
     },
     reporters: ['mocha'],
+    mochaReporter: {
+      ignoreSkipped: true,
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
