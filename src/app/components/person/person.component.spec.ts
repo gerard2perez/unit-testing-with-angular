@@ -68,4 +68,20 @@ fdescribe('PersonComponent', () => {
 
     expect(buttonElement?.textContent).toEqual(expectedMsg)
   })
+  it('should raise selected event when do click', ()=>{
+    let selectedPerson: Person | undefined
+    const expectedPerson = new Person('Gerardo', 'Perez', 32, 77, 1.78)
+    component.person = expectedPerson
+    // const expectedMsg = `IMC: normal`
+    const buttonDebug: DebugElement = fixture.debugElement.query(By.css('button.btn-choose'))
+    const buttonElement: HTMLButtonElement = buttonDebug.nativeElement
+
+    component.onSelected.subscribe(person=>{
+      selectedPerson = person
+    })
+    buttonDebug.triggerEventHandler('click', null)
+    fixture.detectChanges()
+
+    expect(selectedPerson).toEqual(expectedPerson)
+  })
 });
