@@ -5,22 +5,32 @@ import { ProductsService } from 'src/app/services/product.service';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.sass']
+  styleUrls: ['./products.component.sass'],
 })
 export class ProductsComponent implements OnInit {
-  products: Product[] = []
-  constructor(
-    private productsService: ProductsService
-  ) { }
+  limit = 10;
+  offset = 0;
+  status: 'loading' | 'success' | 'error' | 'init' = 'init';
+  products: Product[] = [];
+  constructor(private productsService: ProductsService) {}
 
   ngOnInit(): void {
-    this.getAllProducts()
+    this.getAllProducts();
   }
   getAllProducts() {
-    this.productsService.getAllSimple()
-    .subscribe(products => {
-      this.products = products
-    })
+    this.status = 'loading';
+    this.productsService.getAll(this.limit, this.offset).subscribe({
+      next: (products) => {
+        this.products = [...this.products, ...products];
+        this.offset += this.limit;
+        this.status = 'success';
+      },
+      error: (error) => {
+        setTimeout(()=>{
+          this.products = []
+          this.status = 'error'
+        }, 3000)
+      },
+    });
   }
-
 }
