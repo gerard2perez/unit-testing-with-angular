@@ -12,11 +12,12 @@ import { HighlightDirective } from './highlight.directive';
     <input [(ngModel)]=color [highlight]=color />
     <p>otro parrafo</p>
   `
-})class HostComponent{
+})
+class HostComponent{
   color = 'pink'
 }
 
-fdescribe('HighlightDirective', () => {
+describe('HighlightDirective', () => {
   let component: HostComponent
   let fixture: ComponentFixture<HostComponent>
   beforeEach(async () => {

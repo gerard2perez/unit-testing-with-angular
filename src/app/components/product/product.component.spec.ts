@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { generateOneProduct } from 'src/app/models/product.mock';
+import { ReversePipe } from 'src/app/pipes/reverse.pipe';
 
 import { ProductComponent } from './product.component';
 
@@ -14,6 +16,7 @@ describe('ProductComponent', () => {
 
     fixture = TestBed.createComponent(ProductComponent);
     component = fixture.componentInstance;
+    component.product = generateOneProduct()
     fixture.detectChanges();
   });
 
