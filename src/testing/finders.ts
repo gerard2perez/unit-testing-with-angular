@@ -5,6 +5,10 @@ export function getText<T>(fixture: ComponentFixture<T>, testId: string) {
   const debugElement = queryById(fixture, testId)
   return debugElement.nativeElement.textContent
 }
+export function getAttribute<T>(fixture: ComponentFixture<T>, testId: string, attr: string) {
+  const debugElement = queryById(fixture, testId)
+  return (debugElement.nativeElement as HTMLElement).getAttribute(attr)
+}
 export function queryAllByDirective<T, D>(fixture: ComponentFixture<T>, directive: Type<D>) {
   return fixture.debugElement.queryAll(By.directive(directive));
 }

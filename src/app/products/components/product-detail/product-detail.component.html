@@ -1,13 +1,14 @@
 <section class="container">
   <a (click)="goToBack()">Back</a>
+  <h2 data-testid="type">Type: {{typeCostumer}}</h2>
   <article class="detail" *ngIf="product">
     <figure>
-      <img [src]="product.images[0]" alt="">
+      <img data-testid="img" [src]="product.images[0]" alt="">
     </figure>
     <div>
-      <h1>{{ product?.title }}</h1>
-      <h2>{{ product?.price | currency }}</h2>
-      <p>{{ product?.description }}</p>
+      <h1 data-testid="title">{{ product?.title }}</h1>
+      <h2 data-testid="price">{{ product?.price | currency }}</h2>
+      <p data-testid="description">{{ product?.description }}</p>
     </div>
   </article>
 </section>
