@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { ReactiveFormsModule } from '@angular/forms';
 import { generateOneUser } from 'src/app/models/user.mock';
 import { UsersService } from 'src/app/services/user.service';
-import { asyncData, clickElement, getText, mockObservable, query, queryById, setCheckBoxValue, setInputValue } from 'src/testing';
+import { asyncData, asyncError, clickElement, getText, mockObservable, query, queryById, setCheckBoxValue, setInputValue } from 'src/testing';
 
 import { RegisterFormComponent } from './register-form.component';
 
@@ -137,6 +137,27 @@ fdescribe('RegisterFormComponent', () => {
 
     expect(component.status).toEqual('success')
     expect(component.form.valid).toBeTruthy()
+    expect(userService.create).toHaveBeenCalledTimes(1)
+  }))
+
+  it('fill inputs from UI and send data also changes status from "loading" => "error"', fakeAsync(()=>{
+    userService.create.and.returnValue(asyncError('500 Server Error'))
+
+    setInputValue(fixture, 'input#name', 'Gerardo')
+    setInputValue(fixture, 'input#email', 'gera@gera.com')
+    setInputValue(fixture, 'input#password', 'secUr3pass')
+    setInputValue(fixture, 'input#confirmPassword', 'secUr3pass')
+    setCheckBoxValue(fixture, 'input#terms', true)
+
+    clickElement(fixture, '[type=submit]')
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('loading')
+
+    tick()
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('error')
     expect(userService.create).toHaveBeenCalledTimes(1)
   }))
 });
