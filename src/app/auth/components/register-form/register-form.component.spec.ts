@@ -11,7 +11,8 @@ describe('RegisterFormComponent', () => {
   let fixture: ComponentFixture<RegisterFormComponent>;
   let userService: jasmine.SpyObj<UsersService>
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('UserService', ['create'])
+    const spy = jasmine.createSpyObj('UserService', ['create', 'isAvailableByEmail'])
+    spy.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [ RegisterFormComponent ],
@@ -75,6 +76,16 @@ describe('RegisterFormComponent', () => {
 
     const emailErrorMsg = getText(fixture, 'emailField-email')
     expect(emailErrorMsg).toEqual("*It's not a email")
+  })
+
+  it('makes emailField invalid (email taken)', ()=> {
+    userService.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: false}))
+    setInputValue(fixture, 'input#email', 'mail@mail.com')
+    fixture.detectChanges()
+
+    const emailErrorMsg = getText(fixture, 'emailField-available')
+    expect(emailErrorMsg).toEqual("*This email is already in use")
+    expect(userService.isAvailableByEmail).toHaveBeenCalledTimes(1)
   })
 
   it('send the form data', ()=>{
