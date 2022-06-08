@@ -1,27 +1,32 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { generateOneUser } from 'src/app/models/user.mock';
 import { UsersService } from 'src/app/services/user.service';
 import { asyncData, asyncError, clickElement, getText, mockObservable, query, queryById, setCheckBoxValue, setInputValue } from 'src/testing';
 
 import { RegisterFormComponent } from './register-form.component';
 
-describe('RegisterFormComponent', () => {
+fdescribe('RegisterFormComponent', () => {
   let component: RegisterFormComponent;
   let fixture: ComponentFixture<RegisterFormComponent>;
   let userService: jasmine.SpyObj<UsersService>
+  let router: jasmine.SpyObj<Router>
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('UserService', ['create', 'isAvailableByEmail'])
-    spy.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
+    const userServiceSpy = jasmine.createSpyObj('UserService', ['create', 'isAvailableByEmail'])
+    const routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl'])
+    userServiceSpy.isAvailableByEmail.and.returnValue(mockObservable({isAvailable: true}))
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [ RegisterFormComponent ],
       providers:[
-        {provide: UsersService, useValue: spy}
+        {provide: UsersService, useValue: userServiceSpy},
+        {provide: Router, useValue: routerSpy}
       ]
     })
     .compileComponents();
     userService = TestBed.inject(UsersService) as jasmine.SpyObj<UsersService>;
+    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
   beforeEach(() => {
@@ -170,5 +175,28 @@ describe('RegisterFormComponent', () => {
 
     expect(component.status).toEqual('error')
     expect(userService.create).toHaveBeenCalledTimes(1)
+  }))
+  it('after a success register it navigates to "/login" route', fakeAsync(()=>{
+    const mockUser = generateOneUser()
+    userService.create.and.returnValue(asyncData(mockUser))
+
+    setInputValue(fixture, 'input#name', 'Gerardo')
+    setInputValue(fixture, 'input#email', 'gera@gera.com')
+    setInputValue(fixture, 'input#password', 'secUr3pass')
+    setInputValue(fixture, 'input#confirmPassword', 'secUr3pass')
+    setCheckBoxValue(fixture, 'input#terms', true)
+
+    clickElement(fixture, '[type=submit]')
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('loading')
+
+    tick()
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('success')
+    expect(component.form.valid).toBeTruthy()
+    expect(userService.create).toHaveBeenCalledTimes(1)
+    expect(router.navigateByUrl).toHaveBeenCalledTimes(1)
   }))
 });
