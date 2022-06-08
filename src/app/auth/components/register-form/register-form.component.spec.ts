@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { generateOneUser } from 'src/app/models/user.mock';
 import { UsersService } from 'src/app/services/user.service';
-import { clickElement, getText, mockObservable, query, queryById, setInputValue } from 'src/testing';
+import { asyncData, clickElement, getText, mockObservable, query, queryById, setCheckBoxValue, setInputValue } from 'src/testing';
 
 import { RegisterFormComponent } from './register-form.component';
 
@@ -94,4 +94,49 @@ fdescribe('RegisterFormComponent', () => {
     expect(component.form.valid).toBeTruthy()
     expect(userService.create).toHaveBeenCalledTimes(1)
   })
+  it('correctly updates the status "loading" => "success"', fakeAsync(()=>{
+    const mockUser = generateOneUser()
+    userService.create.and.returnValue(asyncData(mockUser))
+    component.form.patchValue({
+      name: 'gera',
+      email: 'gera@gera.com',
+      password: '123123123',
+      confirmPassword: '123123123',
+      checkTerms: true
+    })
+    clickElement(fixture, '[type=submit]')
+
+    expect(component.status).toEqual('loading')
+
+    tick()
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('success')
+    expect(component.form.valid).toBeTruthy()
+    expect(userService.create).toHaveBeenCalledTimes(1)
+  }))
+
+
+  it('fill inputs from UI and send data also changes status from "loading" => "success"', fakeAsync(()=>{
+    const mockUser = generateOneUser()
+    userService.create.and.returnValue(asyncData(mockUser))
+
+    setInputValue(fixture, 'input#name', 'Gerardo')
+    setInputValue(fixture, 'input#email', 'gera@gera.com')
+    setInputValue(fixture, 'input#password', 'secUr3pass')
+    setInputValue(fixture, 'input#confirmPassword', 'secUr3pass')
+    setCheckBoxValue(fixture, 'input#terms', true)
+
+    clickElement(fixture, '[type=submit]')
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('loading')
+
+    tick()
+    fixture.detectChanges()
+
+    expect(component.status).toEqual('success')
+    expect(component.form.valid).toBeTruthy()
+    expect(userService.create).toHaveBeenCalledTimes(1)
+  }))
 });

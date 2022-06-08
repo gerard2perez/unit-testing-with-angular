@@ -12,6 +12,7 @@ import { CreateUserDTO, User } from 'src/app/models/user.model';
   styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent implements OnInit {
+  status: 'loading' | 'success' | 'error' | 'init' = 'init'
   form = this.fb.group(
     {
       name: ['', [Validators.required]],
@@ -35,9 +36,11 @@ export class RegisterFormComponent implements OnInit {
   register(event: Event) {
     event.preventDefault();
     if (this.form.valid) {
+      this.status = 'loading'
       const value = this.form.value as CreateUserDTO;
       this.usersService.create(value)
       .subscribe((rta) => {
+        this.status = 'success'
         // console.log(rta);
       });
     } else {
