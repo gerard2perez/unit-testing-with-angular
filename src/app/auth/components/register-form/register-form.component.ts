@@ -38,7 +38,7 @@ export class RegisterFormComponent implements OnInit {
       const value = this.form.value as CreateUserDTO;
       this.usersService.create(value)
       .subscribe((rta) => {
-        console.log(rta);
+        // console.log(rta);
       });
     } else {
       this.form.markAllAsTouched();
