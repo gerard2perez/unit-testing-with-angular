@@ -5,6 +5,7 @@ import { Person } from './../../models/person';
 
 import { PersonComponent } from './person.component';
 import { first } from 'rxjs/operators';
+import { clickEvent, getText, queryById } from 'src/testing';
 
 describe('PersonComponent', () => {
   let component: PersonComponent;
@@ -77,18 +78,17 @@ describe('PersonComponent', () => {
   it('should display un text with IMC', () => {
     // Arrange
     const expectText = 'overweight';
-    const button = debugElement.query(By.css('.btn-imc')).nativeElement;
     // Act
-    component.calcIMC();
+    clickEvent(fixture, 'btn-imc', true)
     fixture.detectChanges();
     // Assert
-    expect(button.textContent).toContain(expectText);
+    expect(getText(fixture, 'btn-imc')).toContain(expectText);
   });
 
   it('should display un text with IMC with click', () => {
     // Arrange
     const expectText = 'overweight';
-    const buttonDe = debugElement.query(By.css('.btn-imc'));
+    const buttonDe = queryById(fixture, 'btn-imc')
     const buttonEl = buttonDe.nativeElement;
     // Act
     buttonDe.triggerEventHandler('click', null);
