@@ -1,15 +1,14 @@
-import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
-
 export class FakeValueService {
+
+  constructor() { }
+
   getValue() {
-    return 'fake value'
+    return 'fake value';
   }
-  setValue(value: string) { }
+
+  setValue(value: string) {}
+
   getPromiseValue() {
-    return Promise.resolve('fake promise value')
-  }
-  getObservablevalue() {
-    return of('fake observable value')
+    return Promise.resolve('fake promise value');
   }
 }

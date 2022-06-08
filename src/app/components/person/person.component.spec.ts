@@ -1,136 +1,171 @@
-import { Component, DebugElement } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement, Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { generateOnePerson } from 'src/app/models/person.mock';
-import { Person } from 'src/app/models/person.model';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Person } from './../../models/person';
 
 import { PersonComponent } from './person.component';
+import { first } from 'rxjs/operators';
 
 describe('PersonComponent', () => {
   let component: PersonComponent;
   let fixture: ComponentFixture<PersonComponent>;
-  let person = generateOnePerson()
+  let debugElement: DebugElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PersonComponent ]
+      declarations: [ TestHostComponent, PersonComponent ]
     })
     .compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(PersonComponent);
     component = fixture.componentInstance;
-    component.person = person
+    debugElement = fixture.debugElement;
+    component.person = new Person('Nicolas', 'Molina', 28, 68, 1.65);
+
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it(`assigns a person with name '${person.name}'`, () => {
-    const personDebug = fixture.debugElement
-    const expectedMsg = `Hola, ${person.name}`
-    const h3Debug = personDebug.query(By.css('h3'))
-    const h3Element:HTMLElement = h3Debug.nativeElement
 
-    expect(h3Element.textContent).toEqual(expectedMsg)
-  })
-  it('have a <h3> with "Hola, {person.name}"', ()=>{
-    component.person = new Person('Gerardo', 'Perez', 32, 77, 1.78)
-    const expectedMsg = `Hola, Gerardo`
-    const personDebug: DebugElement = fixture.debugElement
-    const h3Debug: DebugElement = personDebug.query(By.css('h3'))
-    const h3Element = h3Debug.nativeElement
+  it("should the name be 'nicolas'", ()=>{
+    expect(component.person.name).toEqual('Nicolas');
+  });
 
-    fixture.detectChanges()
+  it('should have <h3> with person name', () => {
+    const expectMsg = `Hola, ${component.person.name}`;
+    const h3Debug = debugElement.query(By.css('h3'));
+    const h3: HTMLElement = h3Debug.nativeElement;
+    expect(h3).not.toBeNull();
+    expect(h3?.textContent).toEqual(expectMsg);
+  });
 
-    expect(h3Element?.textContent).toEqual(expectedMsg)
-  })
-  it('have a <p> with "Mi altura es {person.height} m"', ()=>{
-    component.person = new Person('Gerardo', 'Perez', 32, 77, 1.78)
-    const expectedMsg = `Mi altura es 1.78 m`
-    const personDebug: DebugElement = fixture.debugElement
-    const pDebug: DebugElement = personDebug.query(By.css('p'))
-    const pElement = pDebug.nativeElement
+  it('should have <p> with person height', () => {
+    const expectMsg = `Mi altura es ${component.person.height}`;
+    const pDebug = debugElement.query(By.css('p'));
+    const p: HTMLElement = pDebug.nativeElement;
+    expect(p).not.toBeNull();
+    expect(p?.textContent).toEqual(expectMsg);
+  });
 
-    fixture.detectChanges()
+  it('should display a different height', () => {
+    // Arrange
+    component.person.height = 999;
+    const expectMsg = `Mi altura es ${component.person.height}`;
+    const pDebug = debugElement.query(By.css('p'));
+    const p: HTMLElement = pDebug.nativeElement;
+    // Act
+    fixture.detectChanges();
+    // Assert
+    expect(p?.textContent).toEqual(expectMsg);
+  });
 
-    expect(pElement?.textContent).toEqual(expectedMsg)
-  })
-  it('displays a text with IMC when do click', ()=>{
-    component.person = new Person('Gerardo', 'Perez', 32, 77, 1.78)
-    const expectedMsg = `IMC: normal`
-    const personDebug: DebugElement = fixture.debugElement
-    const buttonDebug: DebugElement = personDebug.query(By.css('button.btn-imc'))
-    const buttonElement: HTMLButtonElement = buttonDebug.nativeElement
+  it('should have <h3> contain  person name', () => {
+    // Arrange
+    const expectName = 'Valentina';
+    component.person.name = expectName;
+    const h3: HTMLElement = debugElement.query(By.css('h3')).nativeElement;
+    // Act
+    fixture.detectChanges();
+    // Assert
+    expect(h3?.textContent).toContain(expectName);
+  });
 
-    buttonDebug.triggerEventHandler('click', null)
-    fixture.detectChanges()
+  it('should display un text with IMC', () => {
+    // Arrange
+    const expectText = 'overweight';
+    const button = debugElement.query(By.css('.btn-imc')).nativeElement;
+    // Act
+    component.calcIMC();
+    fixture.detectChanges();
+    // Assert
+    expect(button.textContent).toContain(expectText);
+  });
 
-    expect(buttonElement?.textContent).toEqual(expectedMsg)
-  })
-  it('should raise selected event when do click', ()=>{
-    let selectedPerson: Person | undefined
-    const expectedPerson = new Person('Gerardo', 'Perez', 32, 77, 1.78)
-    component.person = expectedPerson
-    // const expectedMsg = `IMC: normal`
-    const buttonDebug: DebugElement = fixture.debugElement.query(By.css('button.btn-choose'))
-    const buttonElement: HTMLButtonElement = buttonDebug.nativeElement
+  it('should display un text with IMC with click', () => {
+    // Arrange
+    const expectText = 'overweight';
+    const buttonDe = debugElement.query(By.css('.btn-imc'));
+    const buttonEl = buttonDe.nativeElement;
+    // Act
+    buttonDe.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    // Assert
+    expect(buttonEl.textContent).toContain(expectText);
+  });
 
-    component.onSelected.subscribe(person=>{
-      selectedPerson = person
-    })
-    buttonDebug.triggerEventHandler('click', null)
-    fixture.detectChanges()
+  it('should raise selected event when clicked', () => {
+    // Arrange
+    const expectedPerson = new Person('Nicolas', 'Molina', 28, 68, 1.65);
+    const buttonDe = debugElement.query(By.css('.btn-person'));
 
-    expect(selectedPerson).toEqual(expectedPerson)
-  })
+    let selectedPerson: Person | undefined;
+    component.onSelected
+      .pipe(first())
+      .subscribe((person: Person) => {
+        selectedPerson = person;
+      });
+    // Act
+    component.person = expectedPerson;
+    buttonDe.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    // Assert
+    expect(selectedPerson).toEqual(expectedPerson);
+  });
 });
 
 @Component({
-  template: '<app-person [person]=person (onSelected)="onSelected($event)"></app-person>'
+  template: `
+    <app-person
+      [person]="person" (onSelected)="onSelected($event)">
+    </app-person>`
 })
-class HostComponent {
-  person = new Person('Gerardo', 'Perez', 32, 77, 1.78)
-  selectedPerson: Person | undefined
+class TestHostComponent {
+  person: Person = new Person('Nicolas', 'Molina', 28, 68, 1.65);;
+  selectedPerson: Person | undefined;
   onSelected(person: Person) {
-    this.selectedPerson = person
+    this.selectedPerson = person;
   }
 }
+
 describe('PersonComponent from HostComponent', () => {
-  let component: HostComponent;
-  let fixture: ComponentFixture<HostComponent>;
+  let component: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
+  let debugElement: DebugElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HostComponent, PersonComponent ]
+      declarations: [ TestHostComponent, PersonComponent ]
     })
     .compileComponents();
+  });
 
-    fixture = TestBed.createComponent(HostComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
+    debugElement = fixture.debugElement;
+
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('display a person name', ()=>{
-    // Arrage
-    const expectedName = 'Gerardo'
-    const personDebug = fixture.debugElement.query(By.css('app-person h3'))
-    const h3Element = personDebug.nativeElement
-    // Act
-    fixture.detectChanges()
-    // Assert
-    expect(h3Element.textContent).toContain(expectedName)
-  })
-  it('raises selected event when clicked', ()=>{
-    // Arrage
-    const expectedName = 'Gerardo'
-    const btnDebug = fixture.debugElement.query(By.css('app-person button.btn-choose'))
-    // Act
-    btnDebug.triggerEventHandler('click', null)
-    fixture.detectChanges()
-    // Assert
-    expect(component.selectedPerson).toEqual(component.person)
-  })
-})
+
+  it('should display person name', () => {
+    const expectedName = component.person.name;
+    const personDe = debugElement.query(By.css('app-person h3'));
+    const personEl = personDe.nativeElement;
+    expect(personEl.textContent).toContain(expectedName);
+  });
+
+  it('should raise selected event when clicked', () => {
+    const btnDe = debugElement.query(By.css('app-person .btn-person'));
+    btnDe.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    expect(component.selectedPerson).toEqual(component.person);
+  });
+});

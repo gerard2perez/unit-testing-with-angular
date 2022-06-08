@@ -5,18 +5,27 @@ import { of } from 'rxjs';
   providedIn: 'root'
 })
 export class ValueService {
-  private value = 'my value'
+
+  private value = 'my value';
+
   constructor() { }
+
   getValue() {
-    return this.value
+    // code
+    // 10
+    // google-maps key
+    return this.value;
   }
+
   setValue(value: string) {
-    this.value = value
+    this.value = value;
   }
+
   getPromiseValue() {
-    return Promise.resolve('promise value')
+    return Promise.resolve('promise value');
   }
-  getObservablevalue() {
-    return of('observable value')
+
+  getObservableValue() {
+    return of('observable value');
   }
 }

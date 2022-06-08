@@ -3,12 +3,14 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-others',
   templateUrl: './others.component.html',
-  styleUrls: ['./others.component.sass']
+  styleUrls: ['./others.component.scss']
 })
 export class OthersComponent implements OnInit {
-  color: string = 'blue'
-  text = 'roma'
-    constructor() { }
+
+  color = 'yellow';
+  text = 'Un texto';
+
+  constructor() { }
 
   ngOnInit(): void {
   }

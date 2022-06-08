@@ -1,21 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { generateManyPeople, generateOnePerson } from 'src/app/models/person.mock';
-import { Person } from 'src/app/models/person.model';
+
+import { Person } from './../../models/person';
 
 @Component({
   selector: 'app-people',
   templateUrl: './people.component.html',
-  styleUrls: ['./people.component.sass']
+  styleUrls: ['./people.component.scss']
 })
 export class PeopleComponent implements OnInit {
-  people: Person[] = generateManyPeople(3)
-  selectedPerson: Person | null = null
+
+  people: Person[] = [
+    new Person('Nicolas', 'Molina', 28, 68, 1.70),
+    new Person('Valentina', 'Molina', 13, 40, 1.60),
+  ];
+  selectedPerson!: Person;
+
   constructor() { }
 
   ngOnInit(): void {
   }
-  choose(person: Person) {
-    this.selectedPerson = person
+
+  onSelect(person: Person){
+    this.selectedPerson = person;
   }
 
 }

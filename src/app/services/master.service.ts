@@ -6,8 +6,11 @@ import { ValueService } from './value.service';
 })
 export class MasterService {
 
-  constructor(private valueService: ValueService) { }
+  constructor(
+    private valueService: ValueService
+  ) { }
+
   getValue() {
-    return this.valueService.getValue()
+    return this.valueService.getValue();
   }
 }

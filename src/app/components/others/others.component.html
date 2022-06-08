@@ -1,9 +1,10 @@
 <section class="container">
-  <h3>Directive</h3>
-  <h5 highlight>default</h5>
-  <h5 highlight="yellow">yellow</h5>
-  <input [(ngModel)]=color [highlight]=color />
-  <p>{{'my texto' | reverse }}</p>
-  <input [(ngModel)]=text />
-  <p>{{text | reverse }}</p>
+  <h5 highlight="yellow">Something Yellow</h5>
+  <h5 highlight>The Default (Gray)</h5>
+  <h5>No Highlight</h5>
+  <input [(ngModel)]="color" [highlight]="color" />
+
+  <h3>{{ 'Texto largo' | reverse }}</h3>
+  <input [(ngModel)]="text" />
+  <p>{{ text | reverse }}</p>
 </section>

@@ -4,8 +4,8 @@ import { switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 
 import { environment } from './../../environments/environment';
-import { Auth } from './../models/auth.model';
-import { User } from './../models/user.model';
+import { Auth } from '../models/auth.model';
+import { User } from '../models/user.model';
 import { TokenService } from './../services/token.service';
 
 @Injectable({
@@ -34,9 +34,7 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http.post<Auth>(`${this.apiUrl}/login`, {email, password})
     .pipe(
-      tap(response => {
-        return this.tokenService.saveToken(response.access_token)
-      }),
+      tap(response => this.tokenService.saveToken(response.access_token)),
     );
   }
 
