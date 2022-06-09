@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 class HeaderComponentStub {}
 @Component({selector: 'app-footer'})
 class FooterComponentStub {}
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>
   let component: AppComponent
   beforeEach(async () => {
